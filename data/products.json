@@ -1,0 +1,18 @@
+[
+  {"id":"1","name":"Knit Garments","description":"T-shirts, polos, hoodies, sweatshirts and jersey basics. Soft hand-feel fabrics with competitive FOB pricing.","category":"Knit","moq":"500 pcs","leadTime":"45-55 days","image":"","featured":true},
+  {"id":"2","name":"Woven Garments","description":"Formal and casual woven shirts, blouses and dresses. Precise stitching and quality finishes.","category":"Woven","moq":"500 pcs","leadTime":"50-60 days","image":"","featured":true},
+  {"id":"3","name":"Denim","description":"Jeans, jackets, skirts and denim bottoms. Wash developments and sustainable denim options available.","category":"Denim","moq":"600 pcs","leadTime":"55-65 days","image":"","featured":true},
+  {"id":"4","name":"Sweater & Knitwear","description":"Cardigans, pullovers, and specialty knitwear. Fully fashioned and cut-and-sew programmes.","category":"Knitwear","moq":"400 pcs","leadTime":"60-70 days","image":"","featured":true},
+  {"id":"5","name":"Outerwear & Down Jackets","description":"Padded jackets, softshells, and technical outerwear. Down and synthetic fill options.","category":"Outerwear","moq":"400 pcs","leadTime":"60-75 days","image":"","featured":false},
+  {"id":"6","name":"Towels & Home Textiles","description":"Bath towels, beach towels, bathrobes and home textile programmes.","category":"Home","moq":"500 pcs","leadTime":"45-60 days","image":"","featured":false},
+  {"id":"7","name":"T-Shirts & Polos","description":"Basic and fashion tees, polos for retail, promo and uniform programmes.","category":"Knit","moq":"500 pcs","leadTime":"45-55 days","image":"","featured":true},
+  {"id":"8","name":"Hoodies & Sweatshirts","description":"Fleece and French terry hoodies, crewnecks and zip-throughs.","category":"Knit","moq":"500 pcs","leadTime":"45-55 days","image":"","featured":false},
+  {"id":"9","name":"Activewear & Athleisure","description":"Performance tops, leggings, and moisture-wicking sets. Stretch knits and sublimation.","category":"Activewear","moq":"500 pcs","leadTime":"50-60 days","image":"","featured":true},
+  {"id":"10","name":"Kidswear","description":"Boys and girls apparel from newborn to teens. Safety-compliant trims and soft fabrics.","category":"Kids","moq":"500 pcs","leadTime":"45-55 days","image":"","featured":false},
+  {"id":"11","name":"Workwear & Hi-Vis","description":"Corporate, school, hospitality and hi-vis workwear. Durable fabrics and custom branding.","category":"Workwear","moq":"300 pcs","leadTime":"45-60 days","image":"","featured":false},
+  {"id":"12","name":"School & Corporate Uniforms","description":"Complete uniform programmes for schools, hotels and corporate clients.","category":"Uniform","moq":"300 pcs","leadTime":"45-60 days","image":"","featured":false},
+  {"id":"13","name":"Loungewear & Pajamas","description":"Comfort-focused loungewear, sleepwear and sets.","category":"Lounge","moq":"500 pcs","leadTime":"45-55 days","image":"","featured":false},
+  {"id":"14","name":"Swimwear & Beachwear","description":"Swim shorts, tops and beach cover-ups.","category":"Swim","moq":"500 pcs","leadTime":"50-60 days","image":"","featured":false},
+  {"id":"15","name":"Streetwear","description":"Trend-led streetwear and urban fashion pieces.","category":"Streetwear","moq":"500 pcs","leadTime":"45-55 days","image":"","featured":false},
+  {"id":"16","name":"Caps & Headwear","description":"Caps, beanies and branded headwear.","category":"Accessories","moq":"500 pcs","leadTime":"40-50 days","image":"","featured":false}
+]

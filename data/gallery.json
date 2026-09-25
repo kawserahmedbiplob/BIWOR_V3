@@ -1,0 +1,10 @@
+[
+  {"id":"1","title":"Sewing Unit","category":"Production","image":""},
+  {"id":"2","title":"Sewing Floor","category":"Production","image":""},
+  {"id":"3","title":"Fabric Inspection","category":"QC","image":""},
+  {"id":"4","title":"QC Measurement","category":"QC","image":""},
+  {"id":"5","title":"Finished Goods QC","category":"QC","image":""},
+  {"id":"6","title":"Packaging Line","category":"Packing","image":""},
+  {"id":"7","title":"Carton Packing","category":"Packing","image":""},
+  {"id":"8","title":"Container Loading","category":"Shipping","image":""}
+]

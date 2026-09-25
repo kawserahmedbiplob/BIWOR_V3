@@ -1,0 +1,16 @@
+{
+  "presetId": "teal-amber",
+  "custom": false,
+  "colors": {
+    "navy": "#0F766E",
+    "navyMid": "#0D5C56",
+    "accent": "#D97706",
+    "accentSoft": "#FEF3C7",
+    "charcoal": "#0F172A",
+    "slate": "#475569",
+    "slateLight": "#94A3B8",
+    "border": "#E2E8F0",
+    "surface": "#F8FAFC",
+    "white": "#FFFFFF"
+  }
+}

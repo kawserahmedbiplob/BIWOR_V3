@@ -1,0 +1,236 @@
+{
+  "hero": {
+    "visible": true,
+    "badge": "Based in Dhaka, Bangladesh",
+    "title": "Need clothes made in Bangladesh?",
+    "highlight": "Start here.",
+    "subtitle": "A Dhaka buying house. We find the right factory for you.",
+    "ctaPrimary": "Contact Us",
+    "ctaSecondary": "Our Services",
+    "badges": [
+      "Trusted factories",
+      "Order from 500 pieces",
+      "Full quality check"
+    ],
+    "trustItems": [
+      "Registered in Bangladesh",
+      "ACCORD / BSCI / SEDEX / WRAP Factories",
+      "45-Day Average Lead Time"
+    ],
+    "backgroundImage": "",
+    "overlayColor": "#0F766E",
+    "overlayOpacity": 65
+  },
+  "about": {
+    "visible": true,
+    "label": "About",
+    "title": "A registered buying house, built for global brands.",
+    "text": "A registered garment buying house in Dhaka, working only for the buyer. You send the tech pack, target price, and compliance requirements. We run the order through our vetted factory network \u2014 from first sample to final shipment.",
+    "cards": [
+      {
+        "num": "01",
+        "title": "Factory Sourcing",
+        "text": "Direct access to vetted, certified factories"
+      },
+      {
+        "num": "02",
+        "title": "Compliance First",
+        "text": "ACCORD, BSCI, SEDEX, WRAP, GOTS certified partners"
+      },
+      {
+        "num": "03",
+        "title": "Quality Control",
+        "text": "Inline, mid-line, and final inspection"
+      },
+      {
+        "num": "04",
+        "title": "End-to-End Service",
+        "text": "From sampling to final shipment delivery"
+      },
+      {
+        "num": "05",
+        "title": "Full Documentation",
+        "text": "LC handling, export docs & logistics"
+      }
+    ]
+  },
+  "principles": {
+    "visible": true,
+    "label": "Our Principles",
+    "title": "The standards we live by",
+    "subtitle": "Four operating rules. Not slogans.",
+    "items": [
+      {
+        "num": "01",
+        "title": "Transparency First",
+        "text": "Open cost breakdowns at every quote. Buyer-side fee only \u2014 nothing taken from the factory. No hidden markups."
+      },
+      {
+        "num": "02",
+        "title": "Compliance Without Compromise",
+        "text": "Every factory BSCI or SEDEX certified minimum. Audits managed end-to-end."
+      },
+      {
+        "num": "03",
+        "title": "Independent Quality Control",
+        "text": "QC team employed by us \u2014 fully independent of factories. AQL 2.5 enforced."
+      },
+      {
+        "num": "04",
+        "title": "Your IP, Protected",
+        "text": "Mutual NDAs before any brief. Designs never disclosed without written consent."
+      }
+    ]
+  },
+  "services": {
+    "visible": true,
+    "label": "Services",
+    "title": "A full-service apparel sourcing agent in Bangladesh",
+    "items": [
+      {
+        "num": "01",
+        "title": "Factory Matching & Sourcing",
+        "text": "We match your product to the right factory from our vetted panel \u2014 knit, woven, denim, sweater, outerwear, towels."
+      },
+      {
+        "num": "02",
+        "title": "Private Label & Product Development",
+        "text": "Tech pack in, approved sample out. Private label and full cut-and-sew programmes. MOQs from 500 units."
+      },
+      {
+        "num": "03",
+        "title": "Quality Control & Inspection",
+        "text": "In-house QC independent of the factory. Inline, mid-line and final AQL 2.5 inspections."
+      },
+      {
+        "num": "04",
+        "title": "Compliance Management",
+        "text": "WRAP, BSCI, SEDEX, GOTS, OEKO-TEX and Accord factories. Full documentation included."
+      },
+      {
+        "num": "05",
+        "title": "Shipping & Documentation",
+        "text": "LC handling, BL, certificate of origin, customs paperwork. FOB, CNF or DDP."
+      },
+      {
+        "num": "06",
+        "title": "After-Shipment Support",
+        "text": "Claims, shortage resolution, reorder coordination and account management."
+      }
+    ]
+  },
+  "process": {
+    "visible": true,
+    "label": "Concept to Delivery",
+    "title": "Five stages, one accountable team",
+    "subtitle": "How an order moves from brief to shipment. One point of contact, end to end.",
+    "steps": [
+      {
+        "num": "01",
+        "title": "Design & Brief",
+        "text": "Tech pack reviewed, mood board interpreted, factory matched."
+      },
+      {
+        "num": "02",
+        "title": "Sampling",
+        "text": "Proto, fit and PP samples developed against your specs."
+      },
+      {
+        "num": "03",
+        "title": "Production",
+        "text": "Bulk production with inline QC at every stage."
+      },
+      {
+        "num": "04",
+        "title": "Inspection",
+        "text": "AQL 2.5 audit, packing verification, documentation."
+      },
+      {
+        "num": "05",
+        "title": "Delivery",
+        "text": "Freight booked, customs cleared, tracking shared."
+      }
+    ]
+  },
+  "clients": {
+    "visible": true,
+    "label": "Who We Work With",
+    "title": "Built for brands at every stage",
+    "subtitle": "From 500-unit launches to high-volume programmes. Service adjusts, standards don't.",
+    "items": [
+      {
+        "title": "DTC & E-Commerce",
+        "text": "Low MOQ private label from 500 units. Built for Shopify and Amazon launches."
+      },
+      {
+        "title": "Startups & Boutiques",
+        "text": "Tech pack support, fabric matching and cut-and-sew with your branding."
+      },
+      {
+        "title": "Established Retailers",
+        "text": "High-volume wholesale across knit, denim and activewear."
+      },
+      {
+        "title": "Sustainable Labels",
+        "text": "GOTS organic, OEKO-TEX and recycled-fabric programmes."
+      },
+      {
+        "title": "Uniforms & Promo",
+        "text": "School, corporate, hospitality and hi-vis workwear."
+      },
+      {
+        "title": "Sportswear Brands",
+        "text": "Moisture-wicking, stretch knits and sublimation printing."
+      }
+    ]
+  },
+  "products": {
+    "visible": true,
+    "label": "Products",
+    "title": "What we source",
+    "subtitle": "Knit, woven, denim, sweaters, outerwear, activewear, kidswear, workwear and more."
+  },
+  "gallery": {
+    "visible": true,
+    "label": "Our Factories",
+    "title": "Inside our production network",
+    "subtitle": "Photographs from certified partner factories."
+  },
+  "advantages": {
+    "visible": true,
+    "label": "Why Source With Us",
+    "title": "The BIWORSOURCING advantage",
+    "items": [
+      {
+        "title": "Registered & Accountable",
+        "text": "A fully registered garment buying house in Bangladesh."
+      },
+      {
+        "title": "Compliance-First",
+        "text": "Only WRAP, BSCI, SEDEX and GOTS certified factories."
+      },
+      {
+        "title": "One-Stop Solution",
+        "text": "End-to-end from first sample to final shipment."
+      },
+      {
+        "title": "Competitive Pricing",
+        "text": "Direct factory relationships with zero hidden charges."
+      },
+      {
+        "title": "Reliable Lead Times",
+        "text": "Industry-standard timing with dependable delivery."
+      },
+      {
+        "title": "Transparent Reporting",
+        "text": "Regular production and QC updates."
+      }
+    ]
+  },
+  "contact": {
+    "visible": true,
+    "label": "Contact",
+    "title": "Let's discuss your next order",
+    "subtitle": "Send your tech pack, target price and compliance needs. We'll come back with factory options and a clear quote."
+  }
+}
