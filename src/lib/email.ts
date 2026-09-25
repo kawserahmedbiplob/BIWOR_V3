@@ -103,7 +103,7 @@ export async function sendMeetingNotification(m: MeetingMailPayload): Promise<{
       const res = await fetch(webhook, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'meeting_request', to, subject, ...m }),
+        body: JSON.stringify({ event: 'meeting_request', to, subject, ...m }),
       });
       if (!res.ok) {
         return { sent: false, method: 'webhook', error: `Webhook HTTP ${res.status}` };
