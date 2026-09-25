@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getMeetings, saveMeetings } from '@/lib/data';
+import { sendMeetingNotification } from '@/lib/email';
 
 function isAuth(req: NextRequest) {
   return req.cookies.get('biwor_admin')?.value === 'authenticated';
@@ -24,14 +25,32 @@ export async function POST(req: NextRequest) {
       company: String(body.company || '').slice(0, 120),
       date: String(body.date),
       time: String(body.time),
-      type: body.type === 'in-person' ? 'in-person' : 'virtual',
+      type: (body.type === 'in-person' ? 'in-person' : 'virtual') as 'virtual' | 'in-person',
       notes: String(body.notes || '').slice(0, 1000),
       status: 'pending' as const,
       createdAt: new Date().toISOString(),
     };
     items.unshift(meeting);
     saveMeetings(items);
-    return NextResponse.json({ success: true, meeting });
+
+    // Send email notification (non-blocking failure)
+    const mail = await sendMeetingNotification({
+      name: meeting.name,
+      email: meeting.email,
+      company: meeting.company,
+      date: meeting.date,
+      time: meeting.time,
+      type: meeting.type,
+      notes: meeting.notes,
+    });
+
+    return NextResponse.json({
+      success: true,
+      meeting,
+      emailSent: mail.sent,
+      emailMethod: mail.method || null,
+      emailError: mail.sent ? null : mail.error || null,
+    });
   } catch {
     return NextResponse.json({ error: 'Failed' }, { status: 500 });
   }
