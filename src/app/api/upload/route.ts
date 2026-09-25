@@ -7,47 +7,6 @@ function isAuth(req: NextRequest) {
   return req.cookies.get('biwor_admin')?.value === 'authenticated';
 }
 
-async function saveOne(file: File, type: string) {
-  const bytes = await file.arrayBuffer();
-  const buffer = Buffer.from(bytes);
-  const ext = path.extname(file.name) || '.jpg';
-
-  let subdir = 'uploads/library';
-  let filename = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
-
-  if (type === 'logo') {
-    subdir = 'uploads';
-    filename = `logo${ext}`;
-  } else if (type === 'favicon') {
-    subdir = 'uploads';
-    filename = 'favicon.ico';
-  } else if (type === 'hero') {
-    subdir = 'uploads/hero';
-    filename = `hero-${Date.now()}${ext}`;
-  } else if (type === 'product') {
-    subdir = 'uploads/products';
-  } else if (type === 'gallery') {
-    subdir = 'uploads/gallery';
-  } else if (type === 'cert') {
-    subdir = 'uploads/certs';
-  }
-
-  const dir = path.join(process.cwd(), 'public', subdir);
-  fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(path.join(dir, filename), buffer);
-
-  const url = `/${subdir}/${filename}`.replace(/\\/g, '/');
-  const mediaItem = addMedia({
-    id: String(Date.now()) + Math.random().toString(36).slice(2, 6),
-    url,
-    name: file.name,
-    type: type || 'media',
-    size: buffer.length,
-    createdAt: new Date().toISOString(),
-  });
-  return { url, media: mediaItem };
-}
-
 export async function POST(req: NextRequest) {
   if (!isAuth(req)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -55,31 +14,57 @@ export async function POST(req: NextRequest) {
 
   try {
     const formData = await req.formData();
-    const type = (formData.get('type') as string) || 'media';
+    const file = formData.get('file') as File | null;
+    const type = (formData.get('type') as string) || 'general';
 
-    // Bulk: multiple files under "files"
-    const files = formData.getAll('files').filter((f): f is File => f instanceof File && f.size > 0);
-    const single = formData.get('file');
-    if (single instanceof File && single.size > 0) files.push(single);
-
-    if (files.length === 0) {
+    if (!file) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
-    const results = [];
-    for (const file of files) {
-      results.push(await saveOne(file, type));
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+    const ext = path.extname(file.name) || '.jpg';
+
+    let subdir = 'uploads';
+    let filename = `${Date.now()}${ext}`;
+
+    if (type === 'logo') {
+      filename = `logo${ext}`;
+    } else if (type === 'favicon') {
+      filename = 'favicon.ico';
+    } else if (type === 'og') {
+      filename = `og-image${ext}`;
+    } else if (type === 'hero') {
+      subdir = 'uploads/hero';
+      filename = `hero-${Date.now()}${ext}`;
+    } else if (type === 'product') {
+      subdir = 'uploads/products';
+      filename = `${Date.now()}${ext}`;
+    } else if (type === 'gallery') {
+      subdir = 'uploads/gallery';
+      filename = `${Date.now()}${ext}`;
+    } else if (type === 'media') {
+      subdir = 'uploads/library';
+      filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
     }
 
-    if (results.length === 1) {
-      return NextResponse.json({ success: true, url: results[0].url, media: results[0].media });
-    }
-    return NextResponse.json({
-      success: true,
-      urls: results.map((r) => r.url),
-      media: results.map((r) => r.media),
-      count: results.length,
+    const dir = path.join(process.cwd(), 'public', subdir);
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, filename), buffer);
+
+    const url = `/${subdir}/${filename}`.replace(/\\/g, '/');
+
+    // Register in media library
+    const mediaItem = addMedia({
+      id: String(Date.now()),
+      url,
+      name: file.name,
+      type: type || 'general',
+      size: buffer.length,
+      createdAt: new Date().toISOString(),
     });
+
+    return NextResponse.json({ success: true, url, media: mediaItem });
   } catch (err) {
     console.error('Upload error:', err);
     return NextResponse.json({ error: 'Upload failed' }, { status: 500 });

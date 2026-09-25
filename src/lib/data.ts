@@ -72,14 +72,6 @@ export type Settings = {
   cookieConsentEnabled: boolean;
   cookieConsentText: string;
   robotsIndex: boolean;
-  meetingNotifyEmail: string;
-  resendApiKey: string;
-  emailFrom: string;
-  smtpHost: string;
-  smtpPort: string;
-  smtpUser: string;
-  smtpPass: string;
-  meetingWebhookUrl: string;
 };
 
 export type Sections = Record<string, any>;
@@ -112,17 +104,6 @@ const defaultSettings: Settings = {
   ogImage: '',
   footerText: 'A registered apparel buying house in Bangladesh.',
   bangladeshText: '',
-  bangladeshImagesEnabled: false,
-  bangladeshImageCount: 1,
-  bangladeshImage1: '',
-  bangladeshImage1Alt: '',
-  bangladeshImage1Height: 280,
-  bangladeshImage2: '',
-  bangladeshImage2Alt: '',
-  bangladeshImage2Height: 280,
-  bangladeshImage3: '',
-  bangladeshImage3Alt: '',
-  bangladeshImage3Height: 280,
   siteUrl: 'https://biworsourcing.com',
   googleAnalyticsId: '',
   googleTagManagerId: '',
@@ -136,14 +117,6 @@ const defaultSettings: Settings = {
   cookieConsentEnabled: true,
   cookieConsentText: 'We use cookies to improve your experience and analyze site traffic. By continuing, you agree to our use of cookies.',
   robotsIndex: true,
-  meetingNotifyEmail: '',
-  resendApiKey: '',
-  emailFrom: 'onboarding@resend.dev',
-  smtpHost: '',
-  smtpPort: '587',
-  smtpUser: '',
-  smtpPass: '',
-  meetingWebhookUrl: '',
 };
 
 function readJson<T>(filename: string, fallback: T): T {
@@ -207,41 +180,4 @@ export function getTheme(): ThemeConfig {
 }
 export function saveTheme(theme: ThemeConfig) {
   writeJson('theme.json', theme);
-}
-
-export type Certification = {
-  id: string;
-  name: string;
-  purpose: string;
-  logo: string;
-  logoHeight: number;
-  order: number;
-  visible: boolean;
-};
-
-export type MeetingRequest = {
-  id: string;
-  name: string;
-  email: string;
-  company: string;
-  date: string;
-  time: string;
-  type: "virtual" | "in-person";
-  notes: string;
-  status: "pending" | "confirmed" | "cancelled";
-  createdAt: string;
-};
-
-export function getCertifications(): Certification[] {
-  return readJson<Certification[]>("certifications.json", []);
-}
-export function saveCertifications(items: Certification[]) {
-  writeJson("certifications.json", items);
-}
-
-export function getMeetings(): MeetingRequest[] {
-  return readJson<MeetingRequest[]>("meetings.json", []);
-}
-export function saveMeetings(items: MeetingRequest[]) {
-  writeJson("meetings.json", items);
 }

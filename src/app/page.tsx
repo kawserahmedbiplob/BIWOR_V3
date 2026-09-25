@@ -1,8 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { getProducts, getSettings, getGallery, getCertifications } from "@/lib/data";
-import CertLogoSlider from "@/components/CertLogoSlider";
-import MeetingScheduler from "@/components/MeetingScheduler";
+import { getProducts, getSettings, getGallery } from "@/lib/data";
 import Image from "next/image";
 
 export default function Home() {
@@ -19,44 +17,31 @@ export default function Home() {
     { cat: "Sweaters", sample: "18–25 days", bulk: "60–70 days" },
   ];
 
-  const certifications = getCertifications();
+  const certs = [
+    { name: "ACCORD", purpose: "Fire & building safety", coverage: "All factories" },
+    { name: "BSCI", purpose: "Social compliance", coverage: "All factories" },
+    { name: "SEDEX", purpose: "Ethical supply chain", coverage: "All factories" },
+    { name: "WRAP", purpose: "Responsible production", coverage: "On request" },
+    { name: "GOTS", purpose: "Organic textile standard", coverage: "On request" },
+    { name: "OEKO-TEX", purpose: "Substance tested", coverage: "On request" },
+    { name: "ISO 9001", purpose: "Quality management", coverage: "Selected" },
+  ];
 
   return (
     <>
       <Header companyName={s.companyName} logo={s.logo || undefined} />
       <main>
         {/* HERO */}
-        <section className="relative bg-slate-950 text-white overflow-hidden min-h-[520px] md:min-h-[600px] flex items-center">
-          {/* Background image layer */}
+        <section className="relative bg-slate-950 text-white overflow-hidden min-h-[520px] flex items-center">
           {s.heroBackgroundImage ? (
-            <div className="absolute inset-0 z-0">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={s.heroBackgroundImage}
-                alt=""
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-              {/* Color blend overlay — uses rgba so blending works correctly */}
-              <div
-                className="absolute inset-0 z-[1]"
-                style={{
-                  backgroundColor: (() => {
-                    const hex = (s.heroOverlayColor || "#0f172a").replace("#", "");
-                    const full = hex.length === 3 ? hex.split("").map((ch: string) => ch + ch).join("") : hex;
-                    const r = parseInt(full.substring(0, 2), 16) || 15;
-                    const g = parseInt(full.substring(2, 4), 16) || 23;
-                    const b = parseInt(full.substring(4, 6), 16) || 42;
-                    const a = Math.min(100, Math.max(0, Number(s.heroOverlayOpacity) || 60)) / 100;
-                    return `rgba(${r}, ${g}, ${b}, ${a})`;
-                  })(),
-                }}
-              />
-            </div>
+            <>
+              <Image src={s.heroBackgroundImage} alt="" fill className="object-cover" priority unoptimized />
+              <div className="absolute inset-0" style={{ backgroundColor: s.heroOverlayColor || "#0f172a", opacity: (s.heroOverlayOpacity ?? 60) / 100 }} />
+            </>
           ) : (
-            <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_80%_50%_at_70%_-20%,rgba(15,118,110,0.35),transparent)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_70%_-20%,rgba(15,118,110,0.35),transparent)]" />
           )}
-          {/* Content above image + overlay */}
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-20 pb-24 md:pt-28 md:pb-32 relative z-10 w-full">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-20 pb-24 md:pt-28 md:pb-32 relative w-full">
             <p className="text-amber-400/90 text-xs font-semibold tracking-[0.2em] uppercase mb-6">
               {s.heroBadge}
             </p>
@@ -132,70 +117,14 @@ export default function Home() {
           </div>
         </section>
 
-        {/* BANGLADESH — "The label tells the real story" */}
+        {/* BANGLADESH */}
         {s.bangladeshText && (
-          <section className="py-16 md:py-20 bg-slate-900 text-white">
-            {(() => {
-              const enabled = !!(s as any).bangladeshImagesEnabled;
-              const count = Math.min(3, Math.max(1, Number((s as any).bangladeshImageCount) || 1));
-              const imgs = [1, 2, 3].slice(0, count).map((n) => ({
-                src: (s as any)[`bangladeshImage${n}`] as string,
-                alt: ((s as any)[`bangladeshImage${n}Alt`] as string) || "Bangladesh sourcing",
-                height: Number((s as any)[`bangladeshImage${n}Height`]) || 280,
-              })).filter((i) => i.src);
-              const showImages = enabled && imgs.length > 0;
-
-              // No images → same centered layout as before
-              if (!showImages) {
-                return (
-                  <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
-                    <p className="text-teal-400 font-semibold text-xs tracking-[0.15em] uppercase mb-4">Bangladesh Sourcing</p>
-                    <h2 className="text-2xl md:text-3xl font-bold mb-6">
-                      The label tells the <em className="text-amber-400 not-italic font-serif">real story.</em>
-                    </h2>
-                    <p className="text-slate-300 leading-relaxed">{s.bangladeshText}</p>
-                  </div>
-                );
-              }
-
-              // With images → redesigned layout
-              return (
-                <div className="max-w-6xl mx-auto px-4 sm:px-6">
-                  <div className="text-center max-w-3xl mx-auto mb-10">
-                    <p className="text-teal-400 font-semibold text-xs tracking-[0.15em] uppercase mb-4">Bangladesh Sourcing</p>
-                    <h2 className="text-2xl md:text-3xl font-bold mb-6">
-                      The label tells the <em className="text-amber-400 not-italic font-serif">real story.</em>
-                    </h2>
-                    <p className="text-slate-300 leading-relaxed">{s.bangladeshText}</p>
-                  </div>
-                  <div
-                    className={`grid gap-4 ${
-                      imgs.length === 1
-                        ? "max-w-2xl mx-auto grid-cols-1"
-                        : imgs.length === 2
-                        ? "sm:grid-cols-2 max-w-4xl mx-auto"
-                        : "sm:grid-cols-2 lg:grid-cols-3"
-                    }`}
-                  >
-                    {imgs.map((img, i) => (
-                      <div
-                        key={i}
-                        className="relative overflow-hidden rounded-2xl border border-white/10 bg-slate-800"
-                        style={{ minHeight: Math.min(img.height, 400) }}
-                      >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={img.src}
-                          alt={img.alt}
-                          className="w-full object-cover"
-                          style={{ height: img.height, maxHeight: 480 }}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              );
-            })()}
+          <section className="py-16 bg-slate-900 text-white">
+            <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
+              <p className="text-teal-400 font-semibold text-xs tracking-[0.15em] uppercase mb-4">Bangladesh Sourcing</p>
+              <h2 className="text-2xl md:text-3xl font-bold mb-6">The label tells the <em className="text-amber-400 not-italic font-serif">real story.</em></h2>
+              <p className="text-slate-300 leading-relaxed">{s.bangladeshText}</p>
+            </div>
           </section>
         )}
 
@@ -371,7 +300,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* CERTIFICATIONS — logo slider */}
+        {/* CERTIFICATIONS */}
         <section className="py-16 bg-slate-50">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             <p className="text-teal-700 font-semibold text-xs tracking-[0.15em] uppercase mb-3 text-center">Factory Certifications</p>
@@ -381,7 +310,26 @@ export default function Home() {
             <p className="text-center text-slate-500 text-sm mb-10 max-w-xl mx-auto">
               We only place orders with factories carrying recognized certifications. Verifiable on request.
             </p>
-            <CertLogoSlider items={certifications} speed={28} grayscale />
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm bg-white rounded-xl border border-slate-200 overflow-hidden">
+                <thead className="bg-slate-100 text-left">
+                  <tr>
+                    <th className="px-5 py-3.5 font-semibold text-slate-700">Certification</th>
+                    <th className="px-5 py-3.5 font-semibold text-slate-700">Purpose</th>
+                    <th className="px-5 py-3.5 font-semibold text-slate-700">Coverage</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {certs.map((c) => (
+                    <tr key={c.name} className="border-t border-slate-100">
+                      <td className="px-5 py-3 font-medium text-slate-900">{c.name}</td>
+                      <td className="px-5 py-3 text-slate-600">{c.purpose}</td>
+                      <td className="px-5 py-3 text-slate-600">{c.coverage}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </section>
 
@@ -449,7 +397,7 @@ export default function Home() {
                   Let&apos;s discuss your next order
                 </h2>
                 <p className="text-slate-600 leading-relaxed mb-8">
-                  Schedule a virtual or in-person meeting. Bring your tech pack, target price and compliance needs — we&apos;ll prepare factory options.
+                  Send your tech pack, target price and compliance needs. We&apos;ll come back with factory options and a clear quote.
                 </p>
                 <div className="space-y-5 text-sm">
                   <div>
@@ -478,7 +426,31 @@ export default function Home() {
                   )}
                 </div>
               </div>
-              <MeetingScheduler email={s.email} />
+              <div className="bg-slate-50 rounded-2xl p-6 md:p-8 border border-slate-200">
+                <form className="space-y-4" action="#" method="post">
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-medium text-slate-600 mb-1.5">Name</label>
+                      <input type="text" name="name" className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500 outline-none text-sm" placeholder="Your name" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-600 mb-1.5">Email</label>
+                      <input type="email" name="email" className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500 outline-none text-sm" placeholder="you@company.com" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-slate-600 mb-1.5">Company</label>
+                    <input type="text" name="company" className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500 outline-none text-sm" placeholder="Brand or company name" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-slate-600 mb-1.5">Message</label>
+                    <textarea name="message" rows={4} className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500 outline-none text-sm resize-none" placeholder="Product type, quantity, target price, timeline..." />
+                  </div>
+                  <button type="submit" className="w-full bg-teal-800 hover:bg-teal-900 text-white font-semibold py-3 rounded-lg transition text-sm">
+                    Send Enquiry
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
         </section>

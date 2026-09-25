@@ -33,15 +33,13 @@ const SECTION_KEYS = [
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const [tab, setTab] = useState<"overview" | "sections" | "products" | "gallery" | "media" | "branding" | "seo" | "company" | "theme" | "cookies" | "certs" | "meetings">("overview");
+  const [tab, setTab] = useState<"overview" | "sections" | "products" | "gallery" | "media" | "branding" | "seo" | "company" | "theme">("overview");
   const [sectionKey, setSectionKey] = useState("hero");
   const [products, setProducts] = useState<Product[]>([]);
   const [gallery, setGallery] = useState<GalleryItem[]>([]);
   const [settings, setSettings] = useState<Settings | null>(null);
   const [theme, setTheme] = useState<any>(null);
   const [media, setMedia] = useState<any[]>([]);
-  const [certs, setCerts] = useState<any[]>([]);
-  const [meetings, setMeetings] = useState<any[]>([]);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [pickerTarget, setPickerTarget] = useState<string>(""); // product | gallery | hero | logo | favicon
   const [sections, setSections] = useState<Record<string, any>>({});
@@ -67,15 +65,13 @@ export default function AdminDashboard() {
   async function loadData() {
     setLoading(true);
     try {
-      const [pRes, gRes, sRes, secRes, tRes, mRes, cRes, meetRes] = await Promise.all([
+      const [pRes, gRes, sRes, secRes, tRes, mRes] = await Promise.all([
         fetch("/api/products", { credentials: "include" }),
         fetch("/api/gallery", { credentials: "include" }),
         fetch("/api/settings", { credentials: "include" }),
         fetch("/api/sections", { credentials: "include" }),
         fetch("/api/theme", { credentials: "include" }),
         fetch("/api/media", { credentials: "include" }),
-        fetch("/api/certifications", { credentials: "include" }),
-        fetch("/api/meetings", { credentials: "include" }),
       ]);
       setProducts(await pRes.json());
       setGallery(await gRes.json());
@@ -83,8 +79,6 @@ export default function AdminDashboard() {
       setSections(await secRes.json());
       setTheme(await tRes.json());
       setMedia(await mRes.json());
-      setCerts(await cRes.json());
-      if (meetRes.ok) setMeetings(await meetRes.json());
     } catch { setMsg("Failed to load"); }
     finally { setLoading(false); }
   }
@@ -232,29 +226,6 @@ export default function AdminDashboard() {
         credentials: "include",
       });
       setMsg("OG image saved.");
-    } else if (pickerTarget.startsWith("bdImg:") && settings) {
-      const n = pickerTarget.replace("bdImg:", "");
-      const key = `bangladeshImage${n}`;
-      const next = { ...settings, [key]: url, bangladeshImagesEnabled: true } as any;
-      setSettings(next);
-      await fetch("/api/settings", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(next),
-        credentials: "include",
-      });
-      setMsg(`Bangladesh image ${n} saved`);
-    } else if (pickerTarget.startsWith("cert:")) {
-      const certId = pickerTarget.replace("cert:", "");
-      const next = certs.map((x: any) => x.id === certId ? { ...x, logo: url } : x);
-      setCerts(next);
-      await fetch("/api/certifications", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(next),
-        credentials: "include",
-      });
-      setMsg("Certification logo updated");
     }
     setPickerOpen(false);
   }
@@ -294,86 +265,43 @@ export default function AdminDashboard() {
 
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-neutral-50 text-neutral-500 text-sm">Loading...</div>;
 
-  const navGroups = [
-    {
-      title: "Main",
-      items: [
-        { id: "overview", label: "Overview", icon: "◉" },
-        { id: "meetings", label: "Meetings", icon: "✉" },
-      ],
-    },
-    {
-      title: "Website",
-      items: [
-        { id: "company", label: "Content & Hero", icon: "✎" },
-        { id: "sections", label: "Page Sections", icon: "▦" },
-        { id: "products", label: "Products", icon: "▣" },
-        { id: "gallery", label: "Gallery", icon: "🖼" },
-        { id: "certs", label: "Certifications", icon: "★" },
-      ],
-    },
-    {
-      title: "Assets",
-      items: [
-        { id: "media", label: "Media Library", icon: "📁" },
-        { id: "branding", label: "Logo & Favicon", icon: "◆" },
-        { id: "theme", label: "Theme Colors", icon: "◐" },
-      ],
-    },
-    {
-      title: "Growth",
-      items: [
-        { id: "seo", label: "SEO & Tracking", icon: "↗" },
-        { id: "cookies", label: "Cookies", icon: "⚙" },
-      ],
-    },
+  const tabs = [
+    { id: "overview", label: "Overview" },
+    { id: "sections", label: "Page Sections" },
+    { id: "products", label: "Products" },
+    { id: "gallery", label: "Gallery" },
+    { id: "media", label: "Media Library" },
+    { id: "company", label: "Company" },
+    { id: "branding", label: "Logo" },
+    { id: "theme", label: "Theme" },
+    { id: "seo", label: "SEO" },
   ] as const;
-  const tabs = navGroups.flatMap((g) => g.items);
 
   const current = sections[sectionKey] || {};
 
   return (
     <div className="min-h-screen bg-neutral-50">
-      <header className="bg-white border-b border-neutral-200/80 sticky top-0 z-20 shadow-sm shadow-neutral-100">
-        <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link href="/" className="font-bold text-sm tracking-tight text-teal-900">
-              BIWOR<span className="text-amber-500">SOURCING</span>
-            </Link>
-            <span className="text-[10px] font-semibold bg-teal-800 text-white px-2 py-0.5 rounded-full tracking-wide">ADMIN</span>
+      <header className="bg-white border-b border-neutral-200 sticky top-0 z-20">
+        <div className="max-w-6xl mx-auto px-4 h-12 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Link href="/" className="font-semibold text-sm text-neutral-900">BIWORSOURCING</Link>
+            <span className="text-[10px] bg-neutral-900 text-white px-1.5 py-0.5 rounded">ADMIN</span>
           </div>
-          <div className="flex items-center gap-3">
-            <Link href="/" target="_blank" className="text-xs font-medium text-neutral-600 hover:text-teal-800 border border-neutral-200 px-3 py-1.5 rounded-lg hover:border-teal-300 transition">
-              View site ↗
-            </Link>
-            <button onClick={logout} className="text-xs text-red-600 hover:text-red-700 px-2 py-1.5">Logout</button>
+          <div className="flex items-center gap-4">
+            <Link href="/" target="_blank" className="text-xs text-neutral-500 hover:text-neutral-900">View site ↗</Link>
+            <button onClick={logout} className="text-xs text-red-600">Logout</button>
           </div>
         </div>
       </header>
 
       <div className="max-w-6xl mx-auto px-4 py-6 flex gap-6">
-        <aside className="w-56 shrink-0 hidden md:block">
-          <nav className="sticky top-16 space-y-5">
-            {navGroups.map((group) => (
-              <div key={group.title}>
-                <div className="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-neutral-400">{group.title}</div>
-                <div className="space-y-0.5">
-                  {group.items.map((t) => (
-                    <button
-                      key={t.id}
-                      onClick={() => setTab(t.id as any)}
-                      className={`w-full text-left px-3 py-2 rounded-lg text-sm transition flex items-center gap-2 ${
-                        tab === t.id
-                          ? "bg-teal-800 text-white shadow-sm"
-                          : "text-neutral-600 hover:bg-white hover:text-neutral-900"
-                      }`}
-                    >
-                      <span className="text-xs opacity-70 w-4 text-center">{t.icon}</span>
-                      {t.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
+        <aside className="w-40 shrink-0 hidden md:block">
+          <nav className="space-y-0.5 sticky top-16">
+            {tabs.map((t) => (
+              <button key={t.id} onClick={() => setTab(t.id)}
+                className={`w-full text-left px-3 py-2 rounded-md text-sm transition ${tab === t.id ? "bg-neutral-900 text-white" : "text-neutral-600 hover:bg-white"}`}>
+                {t.label}
+              </button>
             ))}
           </nav>
         </aside>
@@ -397,45 +325,39 @@ export default function AdminDashboard() {
 
           {tab === "overview" && (
             <div>
-              <div className="mb-6">
-                <h1 className="text-xl font-bold text-neutral-900 tracking-tight">Dashboard</h1>
-                <p className="text-sm text-neutral-500 mt-1">Welcome back — manage content, media, meetings and SEO</p>
-              </div>
+              <h1 className="text-lg font-semibold text-neutral-900 mb-1">Dashboard</h1>
+              <p className="text-sm text-neutral-500 mb-6">Manage your entire website from one place</p>
               <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-                {[
-                  { n: products.length, l: "Products", t: "products", c: "bg-teal-50 text-teal-800 border-teal-100" },
-                  { n: gallery.length, l: "Gallery", t: "gallery", c: "bg-amber-50 text-amber-800 border-amber-100" },
-                  { n: media.length, l: "Media files", t: "media", c: "bg-sky-50 text-sky-800 border-sky-100" },
-                  { n: meetings.length, l: "Meetings", t: "meetings", c: "bg-violet-50 text-violet-800 border-violet-100" },
-                ].map((card) => (
-                  <button key={card.l} type="button" onClick={() => setTab(card.t as any)} className={`text-left border rounded-xl p-4 transition hover:shadow-sm ${card.c}`}>
-                    <div className="text-2xl font-bold">{card.n}</div>
-                    <div className="text-xs font-medium mt-1 opacity-80">{card.l}</div>
-                  </button>
-                ))}
+                <div className="bg-white border border-neutral-200 rounded-lg p-4"><div className="text-xl font-semibold">{products.length}</div><div className="text-xs text-neutral-500">Products</div></div>
+                <div className="bg-white border border-neutral-200 rounded-lg p-4"><div className="text-xl font-semibold">{gallery.length}</div><div className="text-xs text-neutral-500">Gallery items</div></div>
+                <div className="bg-white border border-neutral-200 rounded-lg p-4"><div className="text-xl font-semibold">{media.length}</div><div className="text-xs text-neutral-500">Media files</div></div>
+                <div className="bg-white border border-neutral-200 rounded-lg p-4"><div className="text-xl font-semibold">{SECTION_KEYS.length}</div><div className="text-xs text-neutral-500">Page sections</div></div>
               </div>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
-                {[
-                  { t: "company", title: "Content & Hero", desc: "Titles, hero image, contact details" },
-                  { t: "media", title: "Media Library", desc: "Bulk upload images once, reuse anywhere" },
-                  { t: "certs", title: "Certifications", desc: "Logo slider size & visibility" },
-                  { t: "meetings", title: "Meeting requests", desc: "Virtual & in-person bookings" },
-                  { t: "seo", title: "SEO & Tracking", desc: "Google, Meta Pixel, schema, sitemap" },
-                  { t: "theme", title: "Theme colors", desc: "Presets and custom brand palette" },
-                ].map((q) => (
-                  <button key={q.t} type="button" onClick={() => setTab(q.t as any)} className="text-left bg-white border border-neutral-200 rounded-xl p-4 hover:border-teal-300 hover:shadow-sm transition group">
-                    <div className="text-sm font-semibold text-neutral-900 group-hover:text-teal-800">{q.title}</div>
-                    <div className="text-xs text-neutral-500 mt-1">{q.desc}</div>
-                  </button>
-                ))}
+              <div className="grid sm:grid-cols-2 gap-3 mb-6">
+                <button onClick={() => setTab("sections")} className="text-left bg-white border border-neutral-200 rounded-lg p-4 hover:border-neutral-400 transition">
+                  <div className="text-sm font-medium text-neutral-900">Page Sections</div>
+                  <div className="text-xs text-neutral-500 mt-1">Edit hero, about, services, process…</div>
+                </button>
+                <button onClick={() => setTab("media")} className="text-left bg-white border border-neutral-200 rounded-lg p-4 hover:border-neutral-400 transition">
+                  <div className="text-sm font-medium text-neutral-900">Media Library</div>
+                  <div className="text-xs text-neutral-500 mt-1">Upload once, reuse everywhere</div>
+                </button>
+                <button onClick={() => setTab("products")} className="text-left bg-white border border-neutral-200 rounded-lg p-4 hover:border-neutral-400 transition">
+                  <div className="text-sm font-medium text-neutral-900">Products</div>
+                  <div className="text-xs text-neutral-500 mt-1">Catalogue with images</div>
+                </button>
+                <button onClick={() => setTab("theme")} className="text-left bg-white border border-neutral-200 rounded-lg p-4 hover:border-neutral-400 transition">
+                  <div className="text-sm font-medium text-neutral-900">Theme & Colors</div>
+                  <div className="text-xs text-neutral-500 mt-1">Presets + custom palette</div>
+                </button>
               </div>
-              <div className="bg-gradient-to-br from-teal-800 to-teal-950 text-white rounded-xl p-5">
-                <div className="text-sm font-semibold mb-2">SEO checklist</div>
-                <ul className="text-xs text-teal-100 space-y-1.5 list-disc list-inside">
-                  <li>Set your real domain under <strong className="text-white">SEO → Site URL</strong></li>
-                  <li>Add GA4 / Meta Pixel IDs if you use ads or analytics</li>
-                  <li>Submit <code className="text-teal-200">/sitemap.xml</code> in Google Search Console</li>
-                  <li>AI crawlers can read <code className="text-teal-200">/llms.txt</code> for company facts</li>
+              <div className="bg-white border border-neutral-200 rounded-lg p-4">
+                <div className="text-sm font-medium text-neutral-900 mb-2">Quick tips</div>
+                <ul className="text-xs text-neutral-500 space-y-1 list-disc list-inside">
+                  <li>Upload photos in <strong>Media Library</strong>, then select them for products, gallery, or hero</li>
+                  <li>Use <strong>Page Sections</strong> to edit all homepage text and toggle sections</li>
+                  <li>Hero supports background image + overlay color and opacity %</li>
+                  <li>Change the whole site look under <strong>Theme</strong></li>
                 </ul>
               </div>
             </div>
@@ -749,24 +671,15 @@ export default function AdminDashboard() {
                   <p className="text-sm text-neutral-500">All uploaded images — reuse for products, gallery, hero, logo</p>
                 </div>
                 <label className="text-sm bg-neutral-900 text-white px-3 py-1.5 rounded-md cursor-pointer hover:bg-neutral-800">
-                  {uploading ? "Uploading..." : "+ Upload (bulk OK)"}
-                  <input type="file" accept="image/*" multiple className="hidden" disabled={uploading} onChange={async (e) => {
-                    const files = e.target.files;
-                    if (!files || files.length === 0) return;
-                    setUploading(true);
-                    try {
-                      const fd = new FormData();
-                      Array.from(files).forEach((f) => fd.append("files", f));
-                      fd.append("type", "media");
-                      const res = await fetch("/api/upload", { method: "POST", body: fd, credentials: "include" });
-                      const data = await res.json();
-                      if (data.success) {
-                        const mRes = await fetch("/api/media", { credentials: "include" });
-                        setMedia(await mRes.json());
-                        setMsg(`Uploaded ${data.count || 1} file(s) to library`);
-                      } else setMsg(data.error || "Upload failed");
-                    } catch { setMsg("Upload failed"); }
-                    finally { setUploading(false); e.target.value = ""; }
+                  {uploading ? "Uploading..." : "+ Upload"}
+                  <input type="file" accept="image/*" className="hidden" disabled={uploading} onChange={async (e) => {
+                    const f = e.target.files?.[0];
+                    if (f) {
+                      await uploadFile(f, "media");
+                      const mRes = await fetch("/api/media", { credentials: "include" });
+                      setMedia(await mRes.json());
+                      setMsg("Uploaded to library");
+                    }
                   }} />
                 </label>
               </div>
@@ -809,194 +722,23 @@ export default function AdminDashboard() {
                 </div>
                 <div><label className="block text-xs text-neutral-500 mb-1">Hero title</label><input className="w-full px-3 py-2 border rounded-md text-sm" value={settings.heroTitle || ""} onChange={(e) => setSettings({ ...settings, heroTitle: e.target.value })} /></div>
                 <div><label className="block text-xs text-neutral-500 mb-1">Hero subtitle</label><textarea className="w-full px-3 py-2 border rounded-md text-sm" rows={2} value={settings.heroSubtitle || ""} onChange={(e) => setSettings({ ...settings, heroSubtitle: e.target.value })} /></div>
-                <div className="p-4 bg-neutral-50 rounded-lg border border-neutral-200 space-y-4">
-                  <div className="text-xs font-medium text-neutral-700 uppercase tracking-wide">Hero background & color blend</div>
-
-                  {/* Live preview */}
-                  <div className="relative h-36 rounded-lg overflow-hidden border border-neutral-300 bg-slate-900">
-                    {settings.heroBackgroundImage ? (
-                      <>
-                        <img src={settings.heroBackgroundImage} alt="" className="absolute inset-0 w-full h-full object-cover" />
-                        <div
-                          className="absolute inset-0"
-                          style={{
-                            backgroundColor: (() => {
-                              const hex = (settings.heroOverlayColor || "#0f172a").replace("#", "");
-                              const full = hex.length === 3 ? hex.split("").map((ch: string) => ch + ch).join("") : hex;
-                              const r = parseInt(full.substring(0, 2), 16) || 15;
-                              const g = parseInt(full.substring(2, 4), 16) || 23;
-                              const b = parseInt(full.substring(4, 6), 16) || 42;
-                              const a = Math.min(100, Math.max(0, Number(settings.heroOverlayOpacity) || 0)) / 100;
-                              return `rgba(${r}, ${g}, ${b}, ${a})`;
-                            })(),
-                          }}
-                        />
-                      </>
-                    ) : (
-                      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 to-teal-900" />
-                    )}
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-white text-xs font-medium drop-shadow-lg bg-black/30 px-2 py-1 rounded">Live preview</span>
+                <div className="flex items-center gap-3 p-3 bg-neutral-50 rounded-md border">
+                  <div className="w-28 h-16 bg-neutral-200 rounded overflow-hidden flex items-center justify-center">
+                    {settings.heroBackgroundImage ? <img src={settings.heroBackgroundImage} alt="" className="w-full h-full object-cover" /> : <span className="text-[10px] text-neutral-400">No image</span>}
+                  </div>
+                  <div>
+                    <button type="button" onClick={() => openPicker("hero")} className="text-xs bg-neutral-900 text-white px-3 py-1.5 rounded-md">Hero image from library</button>
+                    <div className="flex items-center gap-2 mt-2">
+                      <input type="color" value={settings.heroOverlayColor || "#0f172a"} onChange={(e) => setSettings({ ...settings, heroOverlayColor: e.target.value })} className="w-8 h-8 rounded border" />
+                      <label className="text-xs text-neutral-500">Overlay {settings.heroOverlayOpacity ?? 0}%</label>
+                      <input type="range" min={0} max={100} step={5} value={settings.heroOverlayOpacity ?? 0} onChange={(e) => setSettings({ ...settings, heroOverlayOpacity: Number(e.target.value) })} className="w-24" />
                     </div>
                   </div>
-
-                  <div className="flex flex-wrap items-center gap-3">
-                    <button type="button" onClick={() => openPicker("hero")} className="text-xs bg-neutral-900 text-white px-3 py-2 rounded-md">
-                      {settings.heroBackgroundImage ? "Change image" : "Choose image from library"}
-                    </button>
-                    {settings.heroBackgroundImage && (
-                      <button
-                        type="button"
-                        onClick={async () => {
-                          const next = { ...settings, heroBackgroundImage: "" };
-                          setSettings(next);
-                          await fetch("/api/settings", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(next), credentials: "include" });
-                          setMsg("Hero image removed");
-                        }}
-                        className="text-xs text-red-600 hover:underline"
-                      >
-                        Remove image
-                      </button>
-                    )}
-                  </div>
-
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs text-neutral-500 mb-1">Overlay color</label>
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="color"
-                          value={settings.heroOverlayColor || "#0f172a"}
-                          onChange={(e) => setSettings({ ...settings, heroOverlayColor: e.target.value })}
-                          className="w-10 h-10 rounded border cursor-pointer"
-                        />
-                        <input
-                          className="flex-1 px-2 py-1.5 border rounded-md text-xs font-mono"
-                          value={settings.heroOverlayColor || "#0f172a"}
-                          onChange={(e) => setSettings({ ...settings, heroOverlayColor: e.target.value })}
-                        />
-                      </div>
-                      <div className="flex gap-1.5 mt-2">
-                        {["#0f172a", "#0F766E", "#000000", "#1E3A5F", "#14532D", "#7C2D12"].map((col) => (
-                          <button
-                            key={col}
-                            type="button"
-                            title={col}
-                            onClick={() => setSettings({ ...settings, heroOverlayColor: col })}
-                            className="w-6 h-6 rounded border border-neutral-300"
-                            style={{ backgroundColor: col }}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-xs text-neutral-500 mb-1">
-                        Blend strength: <strong>{settings.heroOverlayOpacity ?? 60}%</strong>
-                      </label>
-                      <input
-                        type="range"
-                        min={0}
-                        max={100}
-                        step={5}
-                        value={settings.heroOverlayOpacity ?? 60}
-                        onChange={(e) => setSettings({ ...settings, heroOverlayOpacity: Number(e.target.value) })}
-                        className="w-full"
-                      />
-                      <div className="flex gap-1 mt-2">
-                        {[30, 40, 50, 60, 70, 80].map((v) => (
-                          <button
-                            key={v}
-                            type="button"
-                            onClick={() => setSettings({ ...settings, heroOverlayOpacity: v })}
-                            className={`text-[10px] px-2 py-1 rounded border ${(settings.heroOverlayOpacity ?? 60) === v ? "bg-neutral-900 text-white border-neutral-900" : "border-neutral-300 text-neutral-600"}`}
-                          >
-                            {v}%
-                          </button>
-                        ))}
-                      </div>
-                      <p className="text-[10px] text-neutral-400 mt-2">0% = full photo · 100% = solid color only</p>
-                    </div>
-                  </div>
-                  <p className="text-[10px] text-neutral-500">Click <strong>Save content</strong> below after changing color or blend % so the homepage updates.</p>
                 </div>
                 <div className="text-xs font-semibold text-neutral-400 uppercase tracking-wide pt-2">About</div>
                 <div><label className="block text-xs text-neutral-500 mb-1">About title</label><input className="w-full px-3 py-2 border rounded-md text-sm" value={settings.aboutTitle || ""} onChange={(e) => setSettings({ ...settings, aboutTitle: e.target.value })} /></div>
                 <div><label className="block text-xs text-neutral-500 mb-1">About text</label><textarea className="w-full px-3 py-2 border rounded-md text-sm" rows={3} value={settings.aboutText || ""} onChange={(e) => setSettings({ ...settings, aboutText: e.target.value })} /></div>
-                <div><label className="block text-xs text-neutral-500 mb-1">Bangladesh story text</label><textarea className="w-full px-3 py-2 border rounded-md text-sm" rows={3} value={settings.bangladeshText || ""} onChange={(e) => setSettings({ ...settings, bangladeshText: e.target.value })} /></div>
-
-                <div className="p-4 bg-slate-50 border border-neutral-200 rounded-lg space-y-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <div className="text-xs font-semibold text-neutral-700 uppercase tracking-wide">“The label tells the real story” images</div>
-                      <p className="text-[11px] text-neutral-500 mt-0.5">Off = same centered text layout as before. On = show 1–3 images under the text.</p>
-                    </div>
-                    <label className="flex items-center gap-2 text-sm text-neutral-700 shrink-0">
-                      <input
-                        type="checkbox"
-                        checked={!!(settings as any).bangladeshImagesEnabled}
-                        onChange={(e) => setSettings({ ...settings, bangladeshImagesEnabled: e.target.checked } as any)}
-                      />
-                      Show images
-                    </label>
-                  </div>
-
-                  {(settings as any).bangladeshImagesEnabled && (
-                    <>
-                      <div>
-                        <label className="block text-xs text-neutral-500 mb-1">Number of images</label>
-                        <div className="flex gap-2">
-                          {[1, 2, 3].map((n) => (
-                            <button
-                              key={n}
-                              type="button"
-                              onClick={() => setSettings({ ...settings, bangladeshImageCount: n } as any)}
-                              className={`px-4 py-2 rounded-md text-sm border ${(settings as any).bangladeshImageCount === n ? "bg-neutral-900 text-white border-neutral-900" : "bg-white border-neutral-300 text-neutral-700"}`}
-                            >
-                              {n}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      {[1, 2, 3].slice(0, Math.min(3, Math.max(1, Number((settings as any).bangladeshImageCount) || 1))).map((n) => {
-                        const src = (settings as any)[`bangladeshImage${n}`] || "";
-                        const alt = (settings as any)[`bangladeshImage${n}Alt`] || "";
-                        const height = (settings as any)[`bangladeshImage${n}Height`] ?? 280;
-                        return (
-                          <div key={n} className="p-3 bg-white border border-neutral-200 rounded-md space-y-2">
-                            <div className="text-xs font-medium text-neutral-600">Image {n}</div>
-                            <div className="flex items-start gap-3">
-                              <div className="w-28 h-20 bg-neutral-100 rounded border overflow-hidden flex items-center justify-center shrink-0">
-                                {src ? <img src={src} alt={alt || ""} className="w-full h-full object-cover" /> : <span className="text-[10px] text-neutral-400">Empty</span>}
-                              </div>
-                              <div className="flex-1 space-y-2">
-                                <div className="flex flex-wrap gap-2">
-                                  <button type="button" onClick={() => openPicker(`bdImg:${n}`)} className="text-xs bg-neutral-900 text-white px-2.5 py-1.5 rounded">From library</button>
-                                  {src && (
-                                    <button type="button" className="text-xs text-red-600" onClick={() => setSettings({ ...settings, [`bangladeshImage${n}`]: "" } as any)}>Remove</button>
-                                  )}
-                                </div>
-                                <input
-                                  className="w-full px-2 py-1.5 border rounded text-xs"
-                                  placeholder="Alt text (SEO)"
-                                  value={alt}
-                                  onChange={(e) => setSettings({ ...settings, [`bangladeshImage${n}Alt`]: e.target.value } as any)}
-                                />
-                                <label className="flex items-center gap-2 text-xs text-neutral-500">
-                                  Height
-                                  <input type="range" min={160} max={480} step={10} value={height}
-                                    onChange={(e) => setSettings({ ...settings, [`bangladeshImage${n}Height`]: Number(e.target.value) } as any)}
-                                    className="flex-1" />
-                                  <span className="font-mono text-neutral-700 w-12">{height}px</span>
-                                </label>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </>
-                  )}
-                </div>
+                <div><label className="block text-xs text-neutral-500 mb-1">Bangladesh story</label><textarea className="w-full px-3 py-2 border rounded-md text-sm" rows={2} value={settings.bangladeshText || ""} onChange={(e) => setSettings({ ...settings, bangladeshText: e.target.value })} /></div>
                 <div className="grid sm:grid-cols-3 gap-3">
                   <div><label className="block text-xs text-neutral-500 mb-1">MOQ note</label><input className="w-full px-3 py-2 border rounded-md text-sm" value={settings.moqNote || ""} onChange={(e) => setSettings({ ...settings, moqNote: e.target.value })} /></div>
                   <div><label className="block text-xs text-neutral-500 mb-1">Lead time note</label><input className="w-full px-3 py-2 border rounded-md text-sm" value={settings.leadTimeNote || ""} onChange={(e) => setSettings({ ...settings, leadTimeNote: e.target.value })} /></div>
@@ -1244,14 +986,13 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className="bg-teal-50 border border-teal-100 rounded-lg p-4 text-xs text-teal-900 space-y-1">
-                  <div className="font-semibold">Auto-generated for Google & AI ranking</div>
+                  <div className="font-semibold">Auto-generated for ranking</div>
                   <ul className="list-disc list-inside text-teal-800 space-y-0.5">
-                    <li>/sitemap.xml — submit in Google Search Console</li>
-                    <li>/robots.txt — allows Googlebot + AI crawlers (GPTBot, etc.)</li>
-                    <li>/llms.txt — plain-language company facts for AI systems</li>
-                    <li>JSON-LD: Organization, LocalBusiness, FAQ, Services, Products</li>
-                    <li>Open Graph + Twitter cards for social / chat previews</li>
-                    <li>Canonical URL + meta title/description from fields above</li>
+                    <li>/sitemap.xml — for Google Search Console</li>
+                    <li>/robots.txt — crawl rules</li>
+                    <li>JSON-LD Organization + WebSite schema (helps Google & AI)</li>
+                    <li>Open Graph + Twitter cards for social sharing</li>
+                    <li>Canonical URL from Site URL above</li>
                   </ul>
                 </div>
 
@@ -1261,260 +1002,6 @@ export default function AdminDashboard() {
           )}
         </div>
       </div>
-
-
-          {/* COOKIES */}
-          {tab === "cookies" && settings && (
-            <div>
-              <h1 className="text-lg font-semibold mb-1">Cookie Consent</h1>
-              <p className="text-sm text-neutral-500 mb-5">Control the cookie banner shown to website visitors</p>
-
-              <form onSubmit={saveSettings} className="space-y-4">
-                <div className="bg-white border border-neutral-200 rounded-lg p-5 space-y-4">
-                  <label className="flex items-center gap-3 text-sm text-neutral-800">
-                    <input
-                      type="checkbox"
-                      className="w-4 h-4"
-                      checked={(settings as any).cookieConsentEnabled !== false}
-                      onChange={(e) => setSettings({ ...settings, cookieConsentEnabled: e.target.checked } as any)}
-                    />
-                    <span>
-                      <span className="font-medium">Show cookie consent banner</span>
-                      <span className="block text-xs text-neutral-500 mt-0.5">Visitors see a banner until they Accept or Decline</span>
-                    </span>
-                  </label>
-
-                  <div>
-                    <label className="block text-xs text-neutral-500 mb-1">Banner message</label>
-                    <textarea
-                      className="w-full px-3 py-2 border border-neutral-300 rounded-md text-sm"
-                      rows={3}
-                      value={(settings as any).cookieConsentText || ""}
-                      onChange={(e) => setSettings({ ...settings, cookieConsentText: e.target.value } as any)}
-                      placeholder="We use cookies to improve your experience..."
-                    />
-                  </div>
-
-                  <div className="bg-neutral-50 border border-neutral-200 rounded-md p-4 text-xs text-neutral-600 space-y-2">
-                    <div className="font-medium text-neutral-800">How it works</div>
-                    <ul className="list-disc list-inside space-y-1">
-                      <li>Banner appears at the bottom of the public website</li>
-                      <li>Choice is saved in the visitor&apos;s browser as <code className="bg-neutral-200 px-1 rounded">biwor_cookie_consent</code></li>
-                      <li>Values: <code className="bg-neutral-200 px-1 rounded">accepted</code> or <code className="bg-neutral-200 px-1 rounded">declined</code></li>
-                      <li>This is not stored on your server — each visitor&apos;s browser keeps their own choice</li>
-                    </ul>
-                  </div>
-
-                  <div className="bg-amber-50 border border-amber-100 rounded-md p-4 text-xs text-amber-900">
-                    <div className="font-medium mb-1">To test the banner again</div>
-                    <p>On the website, open browser DevTools → Application → Local Storage → delete <code>biwor_cookie_consent</code> → refresh the page.</p>
-                  </div>
-                </div>
-
-                <button type="submit" className="bg-neutral-900 text-white text-sm font-medium px-5 py-2.5 rounded-md">
-                  Save cookie settings
-                </button>
-              </form>
-            </div>
-          )}
-
-
-
-          {/* CERTIFICATIONS */}
-          {tab === "certs" && (
-            <div>
-              <div className="flex justify-between items-center mb-4">
-                <div>
-                  <h1 className="text-lg font-semibold">Certifications Logo Slider</h1>
-                  <p className="text-sm text-neutral-500">Add logos, set height, reorder — shown as a sliding strip on the homepage</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={async () => {
-                    const res = await fetch("/api/certifications", {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ name: "New cert", purpose: "", logoHeight: 48 }),
-                      credentials: "include",
-                    });
-                    if (res.ok) {
-                      const mRes = await fetch("/api/certifications", { credentials: "include" });
-                      setCerts(await mRes.json());
-                      setMsg("Certification added");
-                    }
-                  }}
-                  className="text-sm bg-neutral-900 text-white px-3 py-1.5 rounded-md"
-                >
-                  + Add
-                </button>
-              </div>
-              <div className="space-y-3">
-                {certs.map((cert: any, idx: number) => (
-                  <div key={cert.id} className="bg-white border border-neutral-200 rounded-lg p-4 flex flex-col sm:flex-row gap-4 items-start">
-                    <div className="w-24 h-16 bg-neutral-50 border rounded flex items-center justify-center overflow-hidden shrink-0">
-                      {cert.logo ? <img src={cert.logo} alt={cert.name} style={{ height: Math.min(cert.logoHeight || 48, 56), width: "auto" }} className="object-contain" /> : <span className="text-[10px] text-neutral-400">No logo</span>}
-                    </div>
-                    <div className="flex-1 space-y-2 w-full">
-                      <div className="grid sm:grid-cols-2 gap-2">
-                        <input className="px-2 py-1.5 border rounded text-sm" value={cert.name || ""} onChange={(e) => {
-                          const next = [...certs]; next[idx] = { ...cert, name: e.target.value }; setCerts(next);
-                        }} placeholder="Name" />
-                        <input className="px-2 py-1.5 border rounded text-sm" value={cert.purpose || ""} onChange={(e) => {
-                          const next = [...certs]; next[idx] = { ...cert, purpose: e.target.value }; setCerts(next);
-                        }} placeholder="Purpose" />
-                      </div>
-                      <div className="flex flex-wrap items-center gap-3">
-                        <label className="text-xs text-neutral-500 flex items-center gap-2">
-                          Logo height
-                          <input type="range" min={24} max={96} step={4} value={cert.logoHeight || 48} onChange={(e) => {
-                            const next = [...certs]; next[idx] = { ...cert, logoHeight: Number(e.target.value) }; setCerts(next);
-                          }} className="w-24" />
-                          <span className="font-mono text-neutral-700">{cert.logoHeight || 48}px</span>
-                        </label>
-                        <label className="text-xs text-neutral-600 flex items-center gap-1.5">
-                          <input type="checkbox" checked={cert.visible !== false} onChange={(e) => {
-                            const next = [...certs]; next[idx] = { ...cert, visible: e.target.checked }; setCerts(next);
-                          }} />
-                          Visible
-                        </label>
-                        <button type="button" onClick={() => openPicker(`cert:${cert.id}`)} className="text-xs bg-neutral-900 text-white px-2.5 py-1 rounded">Logo from library</button>
-                        <button type="button" onClick={async () => {
-                          if (!confirm("Delete?")) return;
-                          await fetch(`/api/certifications?id=${cert.id}`, { method: "DELETE", credentials: "include" });
-                          setCerts(certs.filter((x: any) => x.id !== cert.id));
-                        }} className="text-xs text-red-600">Delete</button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <button
-                type="button"
-                className="mt-4 bg-neutral-900 text-white text-sm px-5 py-2 rounded-md"
-                onClick={async () => {
-                  const res = await fetch("/api/certifications", {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(certs),
-                    credentials: "include",
-                  });
-                  if (res.ok) setMsg("Certifications saved. Refresh homepage to see slider.");
-                  else setMsg("Failed to save");
-                }}
-              >
-                Save certifications
-              </button>
-            </div>
-          )}
-
-          {/* MEETINGS */}
-          {tab === "meetings" && (
-            <div>
-              <h1 className="text-lg font-semibold mb-1">Meeting requests</h1>
-              <p className="text-sm text-neutral-500 mb-5">Set which email receives alerts, then manage incoming requests</p>
-
-              {settings && (
-                <form onSubmit={saveSettings} className="bg-white border border-neutral-200 rounded-xl p-5 mb-6 space-y-4">
-                  <div className="text-sm font-semibold text-neutral-900">Email notifications</div>
-                  <p className="text-xs text-neutral-500">When someone requests a meeting, we email this address (if Resend or SMTP is set up).</p>
-                  <div>
-                    <label className="block text-xs text-neutral-500 mb-1">Receive meeting requests at</label>
-                    <input className="w-full px-3 py-2 border rounded-md text-sm" type="email" placeholder="you@company.com"
-                      value={(settings as any).meetingNotifyEmail || settings.email || ""}
-                      onChange={(e) => setSettings({ ...settings, meetingNotifyEmail: e.target.value } as any)} />
-                  </div>
-                  <div className="grid sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs text-neutral-500 mb-1">Resend API key (recommended)</label>
-                      <input className="w-full px-3 py-2 border rounded-md text-sm font-mono" type="password" placeholder="re_xxxx"
-                        value={(settings as any).resendApiKey || ""}
-                        onChange={(e) => setSettings({ ...settings, resendApiKey: e.target.value } as any)} />
-                      <p className="text-[10px] text-neutral-400 mt-1">Get a free key at resend.com</p>
-                    </div>
-                    <div>
-                      <label className="block text-xs text-neutral-500 mb-1">From email</label>
-                      <input className="w-full px-3 py-2 border rounded-md text-sm" placeholder="onboarding@resend.dev"
-                        value={(settings as any).emailFrom || "onboarding@resend.dev"}
-                        onChange={(e) => setSettings({ ...settings, emailFrom: e.target.value } as any)} />
-                    </div>
-                  </div>
-                  <details className="text-xs text-neutral-600">
-                    <summary className="cursor-pointer font-medium text-neutral-700">Advanced: SMTP / Webhook</summary>
-                    <div className="mt-3 grid sm:grid-cols-2 gap-3">
-                      <input className="px-3 py-2 border rounded-md text-sm" placeholder="SMTP host (smtp.gmail.com)" value={(settings as any).smtpHost || ""} onChange={(e) => setSettings({ ...settings, smtpHost: e.target.value } as any)} />
-                      <input className="px-3 py-2 border rounded-md text-sm" placeholder="Port 587" value={(settings as any).smtpPort || "587"} onChange={(e) => setSettings({ ...settings, smtpPort: e.target.value } as any)} />
-                      <input className="px-3 py-2 border rounded-md text-sm" placeholder="SMTP user" value={(settings as any).smtpUser || ""} onChange={(e) => setSettings({ ...settings, smtpUser: e.target.value } as any)} />
-                      <input className="px-3 py-2 border rounded-md text-sm" type="password" placeholder="SMTP password" value={(settings as any).smtpPass || ""} onChange={(e) => setSettings({ ...settings, smtpPass: e.target.value } as any)} />
-                      <input className="sm:col-span-2 px-3 py-2 border rounded-md text-sm font-mono" placeholder="Webhook URL (optional)" value={(settings as any).meetingWebhookUrl || ""} onChange={(e) => setSettings({ ...settings, meetingWebhookUrl: e.target.value } as any)} />
-                    </div>
-                    <p className="text-[10px] text-neutral-400 mt-2">SMTP needs: npm i nodemailer</p>
-                  </details>
-                  <button type="submit" className="bg-teal-800 text-white text-sm font-medium px-5 py-2 rounded-md">Save email settings</button>
-                </form>
-              )}
-
-              <div className="text-sm font-semibold text-neutral-900 mb-3">Incoming requests</div>
-              {meetings.length === 0 ? (
-                <div className="bg-white border rounded-lg py-12 text-center text-sm text-neutral-400">No meeting requests yet</div>
-              ) : (
-                <div className="bg-white border rounded-lg overflow-hidden">
-                  <table className="w-full text-sm">
-                    <thead className="bg-neutral-50 text-left text-xs text-neutral-500">
-                      <tr>
-                        <th className="px-3 py-2">Date / Time</th>
-                        <th className="px-3 py-2">Name</th>
-                        <th className="px-3 py-2 hidden sm:table-cell">Type</th>
-                        <th className="px-3 py-2">Status</th>
-                        <th className="px-3 py-2">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {meetings.map((m: any) => (
-                        <tr key={m.id} className="border-t border-neutral-100">
-                          <td className="px-3 py-2 whitespace-nowrap">{m.date}<br/><span className="text-xs text-neutral-400">{m.time}</span></td>
-                          <td className="px-3 py-2">
-                            <div className="font-medium">{m.name}</div>
-                            <div className="text-xs text-neutral-500">{m.email}</div>
-                            {m.company && <div className="text-xs text-neutral-400">{m.company}</div>}
-                            {m.notes && <div className="text-xs text-neutral-400 mt-1">{m.notes}</div>}
-                          </td>
-                          <td className="px-3 py-2 hidden sm:table-cell capitalize">{m.type}</td>
-                          <td className="px-3 py-2">
-                            <select
-                              className="text-xs border rounded px-1.5 py-1"
-                              value={m.status}
-                              onChange={async (e) => {
-                                const status = e.target.value;
-                                await fetch("/api/meetings", {
-                                  method: "PUT",
-                                  headers: { "Content-Type": "application/json" },
-                                  body: JSON.stringify({ id: m.id, status }),
-                                  credentials: "include",
-                                });
-                                setMeetings(meetings.map((x: any) => x.id === m.id ? { ...x, status } : x));
-                              }}
-                            >
-                              <option value="pending">Pending</option>
-                              <option value="confirmed">Confirmed</option>
-                              <option value="cancelled">Cancelled</option>
-                            </select>
-                          </td>
-                          <td className="px-3 py-2">
-                            <button type="button" className="text-xs text-red-600" onClick={async () => {
-                              if (!confirm("Delete request?")) return;
-                              await fetch(`/api/meetings?id=${m.id}`, { method: "DELETE", credentials: "include" });
-                              setMeetings(meetings.filter((x: any) => x.id !== m.id));
-                            }}>Delete</button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-          )}
-
 
       <MediaPicker
         open={pickerOpen}
