@@ -7,9 +7,28 @@ export default function robots(): MetadataRoute.Robots {
   const allowIndex = s.robotsIndex !== false;
 
   return {
-    rules: allowIndex
-      ? { userAgent: "*", allow: "/", disallow: ["/admin", "/api/"] }
-      : { userAgent: "*", disallow: "/" },
+    rules: [
+      {
+        userAgent: "*",
+        allow: allowIndex ? "/" : undefined,
+        disallow: allowIndex ? ["/admin", "/api/", "/admin/"] : "/",
+      },
+      {
+        userAgent: "GPTBot",
+        allow: allowIndex ? "/" : undefined,
+        disallow: allowIndex ? ["/admin", "/api/"] : "/",
+      },
+      {
+        userAgent: "Google-Extended",
+        allow: allowIndex ? "/" : undefined,
+        disallow: allowIndex ? ["/admin", "/api/"] : "/",
+      },
+      {
+        userAgent: "CCBot",
+        allow: allowIndex ? "/" : undefined,
+        disallow: allowIndex ? ["/admin", "/api/"] : "/",
+      },
+    ],
     sitemap: `${siteUrl}/sitemap.xml`,
     host: siteUrl,
   };

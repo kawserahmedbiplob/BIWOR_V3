@@ -18,14 +18,14 @@
       "45-Day Average Lead Time"
     ],
     "backgroundImage": "",
-    "overlayColor": "#1E4D8C",
-    "overlayOpacity": 80
+    "overlayColor": "#0F766E",
+    "overlayOpacity": 65
   },
   "about": {
     "visible": true,
     "label": "About",
     "title": "A registered buying house, built for global brands.",
-    "text": "A registered garment buying house in Dhaka, working only for the buyer. You send the tech pack, target price, and compliance requirements. We run the order through our vetted factory network — from first sample to final shipment.",
+    "text": "A registered garment buying house in Dhaka, working only for the buyer. You send the tech pack, target price, and compliance requirements. We run the order through our vetted factory network \u2014 from first sample to final shipment.",
     "cards": [
       {
         "num": "01",
@@ -63,7 +63,7 @@
       {
         "num": "01",
         "title": "Transparency First",
-        "text": "Open cost breakdowns at every quote. Buyer-side fee only — nothing taken from the factory. No hidden markups."
+        "text": "Open cost breakdowns at every quote. Buyer-side fee only \u2014 nothing taken from the factory. No hidden markups."
       },
       {
         "num": "02",
@@ -73,7 +73,7 @@
       {
         "num": "03",
         "title": "Independent Quality Control",
-        "text": "QC team employed by us — fully independent of factories. AQL 2.5 enforced."
+        "text": "QC team employed by us \u2014 fully independent of factories. AQL 2.5 enforced."
       },
       {
         "num": "04",
@@ -90,7 +90,7 @@
       {
         "num": "01",
         "title": "Factory Matching & Sourcing",
-        "text": "We match your product to the right factory from our vetted panel — knit, woven, denim, sweater, outerwear, towels."
+        "text": "We match your product to the right factory from our vetted panel \u2014 knit, woven, denim, sweater, outerwear, towels."
       },
       {
         "num": "02",

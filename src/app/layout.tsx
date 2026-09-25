@@ -74,6 +74,13 @@ export async function generateMetadata(): Promise<Metadata> {
       ...(s.facebookAppId ? { "fb:app_id": s.facebookAppId } : {}),
     },
     category: "business",
+    verification: {
+      // Add codes in admin later if needed; placeholders ignored when empty
+      google: undefined,
+      other: {
+        "ai-content": "human-created-business-website",
+      },
+    },
   };
 }
 
