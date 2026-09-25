@@ -59,6 +59,17 @@ export type Settings = {
   ogImage: string;
   footerText: string;
   bangladeshText: string;
+  bangladeshImagesEnabled: boolean;
+  bangladeshImageCount: number;
+  bangladeshImage1: string;
+  bangladeshImage1Alt: string;
+  bangladeshImage1Height: number;
+  bangladeshImage2: string;
+  bangladeshImage2Alt: string;
+  bangladeshImage2Height: number;
+  bangladeshImage3: string;
+  bangladeshImage3Alt: string;
+  bangladeshImage3Height: number;
   siteUrl: string;
   googleAnalyticsId: string;
   googleTagManagerId: string;
