@@ -42,11 +42,7 @@ export default function MeetingScheduler({ email }: Props) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed");
       setStatus("ok");
-      setMsg(
-        data.emailSent
-          ? "Meeting request sent. We received it and will confirm by email shortly."
-          : "Meeting request saved. We will contact you soon."
-      );
+      setMsg("Meeting request sent. We will confirm by email shortly.");
       setName("");
       setUserEmail("");
       setCompany("");

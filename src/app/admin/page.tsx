@@ -232,18 +232,6 @@ export default function AdminDashboard() {
         credentials: "include",
       });
       setMsg("OG image saved.");
-    } else if (pickerTarget.startsWith("bdImg:") && settings) {
-      const n = pickerTarget.replace("bdImg:", "");
-      const key = `bangladeshImage${n}`;
-      const next = { ...settings, [key]: url, bangladeshImagesEnabled: true } as any;
-      setSettings(next);
-      await fetch("/api/settings", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(next),
-        credentials: "include",
-      });
-      setMsg(`Bangladesh image ${n} saved`);
     } else if (pickerTarget.startsWith("cert:")) {
       const certId = pickerTarget.replace("cert:", "");
       const next = certs.map((x: any) => x.id === certId ? { ...x, logo: url } : x);
@@ -922,81 +910,7 @@ export default function AdminDashboard() {
                 <div className="text-xs font-semibold text-neutral-400 uppercase tracking-wide pt-2">About</div>
                 <div><label className="block text-xs text-neutral-500 mb-1">About title</label><input className="w-full px-3 py-2 border rounded-md text-sm" value={settings.aboutTitle || ""} onChange={(e) => setSettings({ ...settings, aboutTitle: e.target.value })} /></div>
                 <div><label className="block text-xs text-neutral-500 mb-1">About text</label><textarea className="w-full px-3 py-2 border rounded-md text-sm" rows={3} value={settings.aboutText || ""} onChange={(e) => setSettings({ ...settings, aboutText: e.target.value })} /></div>
-                <div><label className="block text-xs text-neutral-500 mb-1">Bangladesh story text</label><textarea className="w-full px-3 py-2 border rounded-md text-sm" rows={3} value={settings.bangladeshText || ""} onChange={(e) => setSettings({ ...settings, bangladeshText: e.target.value })} /></div>
-
-                <div className="p-4 bg-slate-50 border border-neutral-200 rounded-lg space-y-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <div className="text-xs font-semibold text-neutral-700 uppercase tracking-wide">“The label tells the real story” images</div>
-                      <p className="text-[11px] text-neutral-500 mt-0.5">Off = same centered text layout as before. On = show 1–3 images under the text.</p>
-                    </div>
-                    <label className="flex items-center gap-2 text-sm text-neutral-700 shrink-0">
-                      <input
-                        type="checkbox"
-                        checked={!!(settings as any).bangladeshImagesEnabled}
-                        onChange={(e) => setSettings({ ...settings, bangladeshImagesEnabled: e.target.checked } as any)}
-                      />
-                      Show images
-                    </label>
-                  </div>
-
-                  {(settings as any).bangladeshImagesEnabled && (
-                    <>
-                      <div>
-                        <label className="block text-xs text-neutral-500 mb-1">Number of images</label>
-                        <div className="flex gap-2">
-                          {[1, 2, 3].map((n) => (
-                            <button
-                              key={n}
-                              type="button"
-                              onClick={() => setSettings({ ...settings, bangladeshImageCount: n } as any)}
-                              className={`px-4 py-2 rounded-md text-sm border ${(settings as any).bangladeshImageCount === n ? "bg-neutral-900 text-white border-neutral-900" : "bg-white border-neutral-300 text-neutral-700"}`}
-                            >
-                              {n}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      {[1, 2, 3].slice(0, Math.min(3, Math.max(1, Number((settings as any).bangladeshImageCount) || 1))).map((n) => {
-                        const src = (settings as any)[`bangladeshImage${n}`] || "";
-                        const alt = (settings as any)[`bangladeshImage${n}Alt`] || "";
-                        const height = (settings as any)[`bangladeshImage${n}Height`] ?? 280;
-                        return (
-                          <div key={n} className="p-3 bg-white border border-neutral-200 rounded-md space-y-2">
-                            <div className="text-xs font-medium text-neutral-600">Image {n}</div>
-                            <div className="flex items-start gap-3">
-                              <div className="w-28 h-20 bg-neutral-100 rounded border overflow-hidden flex items-center justify-center shrink-0">
-                                {src ? <img src={src} alt={alt || ""} className="w-full h-full object-cover" /> : <span className="text-[10px] text-neutral-400">Empty</span>}
-                              </div>
-                              <div className="flex-1 space-y-2">
-                                <div className="flex flex-wrap gap-2">
-                                  <button type="button" onClick={() => openPicker(`bdImg:${n}`)} className="text-xs bg-neutral-900 text-white px-2.5 py-1.5 rounded">From library</button>
-                                  {src && (
-                                    <button type="button" className="text-xs text-red-600" onClick={() => setSettings({ ...settings, [`bangladeshImage${n}`]: "" } as any)}>Remove</button>
-                                  )}
-                                </div>
-                                <input
-                                  className="w-full px-2 py-1.5 border rounded text-xs"
-                                  placeholder="Alt text (SEO)"
-                                  value={alt}
-                                  onChange={(e) => setSettings({ ...settings, [`bangladeshImage${n}Alt`]: e.target.value } as any)}
-                                />
-                                <label className="flex items-center gap-2 text-xs text-neutral-500">
-                                  Height
-                                  <input type="range" min={160} max={480} step={10} value={height}
-                                    onChange={(e) => setSettings({ ...settings, [`bangladeshImage${n}Height`]: Number(e.target.value) } as any)}
-                                    className="flex-1" />
-                                  <span className="font-mono text-neutral-700 w-12">{height}px</span>
-                                </label>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </>
-                  )}
-                </div>
+                <div><label className="block text-xs text-neutral-500 mb-1">Bangladesh story</label><textarea className="w-full px-3 py-2 border rounded-md text-sm" rows={2} value={settings.bangladeshText || ""} onChange={(e) => setSettings({ ...settings, bangladeshText: e.target.value })} /></div>
                 <div className="grid sm:grid-cols-3 gap-3">
                   <div><label className="block text-xs text-neutral-500 mb-1">MOQ note</label><input className="w-full px-3 py-2 border rounded-md text-sm" value={settings.moqNote || ""} onChange={(e) => setSettings({ ...settings, moqNote: e.target.value })} /></div>
                   <div><label className="block text-xs text-neutral-500 mb-1">Lead time note</label><input className="w-full px-3 py-2 border rounded-md text-sm" value={settings.leadTimeNote || ""} onChange={(e) => setSettings({ ...settings, leadTimeNote: e.target.value })} /></div>
@@ -1411,49 +1325,7 @@ export default function AdminDashboard() {
           {tab === "meetings" && (
             <div>
               <h1 className="text-lg font-semibold mb-1">Meeting requests</h1>
-              <p className="text-sm text-neutral-500 mb-5">Set which email receives alerts, then manage incoming requests</p>
-
-              {settings && (
-                <form onSubmit={saveSettings} className="bg-white border border-neutral-200 rounded-xl p-5 mb-6 space-y-4">
-                  <div className="text-sm font-semibold text-neutral-900">Email notifications</div>
-                  <p className="text-xs text-neutral-500">When someone requests a meeting, we email this address (if Resend or SMTP is set up).</p>
-                  <div>
-                    <label className="block text-xs text-neutral-500 mb-1">Receive meeting requests at</label>
-                    <input className="w-full px-3 py-2 border rounded-md text-sm" type="email" placeholder="you@company.com"
-                      value={(settings as any).meetingNotifyEmail || settings.email || ""}
-                      onChange={(e) => setSettings({ ...settings, meetingNotifyEmail: e.target.value } as any)} />
-                  </div>
-                  <div className="grid sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs text-neutral-500 mb-1">Resend API key (recommended)</label>
-                      <input className="w-full px-3 py-2 border rounded-md text-sm font-mono" type="password" placeholder="re_xxxx"
-                        value={(settings as any).resendApiKey || ""}
-                        onChange={(e) => setSettings({ ...settings, resendApiKey: e.target.value } as any)} />
-                      <p className="text-[10px] text-neutral-400 mt-1">Get a free key at resend.com</p>
-                    </div>
-                    <div>
-                      <label className="block text-xs text-neutral-500 mb-1">From email</label>
-                      <input className="w-full px-3 py-2 border rounded-md text-sm" placeholder="onboarding@resend.dev"
-                        value={(settings as any).emailFrom || "onboarding@resend.dev"}
-                        onChange={(e) => setSettings({ ...settings, emailFrom: e.target.value } as any)} />
-                    </div>
-                  </div>
-                  <details className="text-xs text-neutral-600">
-                    <summary className="cursor-pointer font-medium text-neutral-700">Advanced: SMTP / Webhook</summary>
-                    <div className="mt-3 grid sm:grid-cols-2 gap-3">
-                      <input className="px-3 py-2 border rounded-md text-sm" placeholder="SMTP host (smtp.gmail.com)" value={(settings as any).smtpHost || ""} onChange={(e) => setSettings({ ...settings, smtpHost: e.target.value } as any)} />
-                      <input className="px-3 py-2 border rounded-md text-sm" placeholder="Port 587" value={(settings as any).smtpPort || "587"} onChange={(e) => setSettings({ ...settings, smtpPort: e.target.value } as any)} />
-                      <input className="px-3 py-2 border rounded-md text-sm" placeholder="SMTP user" value={(settings as any).smtpUser || ""} onChange={(e) => setSettings({ ...settings, smtpUser: e.target.value } as any)} />
-                      <input className="px-3 py-2 border rounded-md text-sm" type="password" placeholder="SMTP password" value={(settings as any).smtpPass || ""} onChange={(e) => setSettings({ ...settings, smtpPass: e.target.value } as any)} />
-                      <input className="sm:col-span-2 px-3 py-2 border rounded-md text-sm font-mono" placeholder="Webhook URL (optional)" value={(settings as any).meetingWebhookUrl || ""} onChange={(e) => setSettings({ ...settings, meetingWebhookUrl: e.target.value } as any)} />
-                    </div>
-                    <p className="text-[10px] text-neutral-400 mt-2">SMTP needs: npm i nodemailer</p>
-                  </details>
-                  <button type="submit" className="bg-teal-800 text-white text-sm font-medium px-5 py-2 rounded-md">Save email settings</button>
-                </form>
-              )}
-
-              <div className="text-sm font-semibold text-neutral-900 mb-3">Incoming requests</div>
+              <p className="text-sm text-neutral-500 mb-5">Requests from the homepage calendar / virtual meeting form</p>
               {meetings.length === 0 ? (
                 <div className="bg-white border rounded-lg py-12 text-center text-sm text-neutral-400">No meeting requests yet</div>
               ) : (
